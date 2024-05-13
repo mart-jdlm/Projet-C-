@@ -4,9 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Projet_martin_valentin
+namespace HUET_JOUBERT
 {
-    internal class Client
+    class Client : Personne
     {
+        int cagnotte;
+        public Client(string ss, string nom, string prenom, DateTime naissance, string adresse, string mail, string num,int cagnotte) : base(ss,nom,prenom,naissance,adresse,mail,num)
+        {
+            this.cagnotte = cagnotte;
+        }
+        public Client(string nom, string prenom, int cagnotte) : base(nom,prenom)
+        {
+            this.cagnotte= cagnotte;
+        }
+        public int Cagnotte
+        {
+            get { return cagnotte; }
+            set { cagnotte = value; }
+        }
     }
 }
