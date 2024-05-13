@@ -50,7 +50,8 @@
             }
             else
             {
-                chiffre_affaires = chiffre_affaires + achat.Customer.Cagnotte;
+                chiffre_affaires = chiffre_affaires + achat.Prix;
+                achat.Customer.Cagnotte = achat.Customer.Cagnotte - achat.Prix;
                 Console.WriteLine("Achat effectué");
             }
         }
