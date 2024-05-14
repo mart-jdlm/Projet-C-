@@ -9,6 +9,7 @@ namespace HUET_JOUBERT
     class Client : Personne
     {
         int cagnotte;
+        int montant_global = 0;
         public Client(string ss, string nom, string prenom, DateTime naissance, string adresse, string mail, string num,int cagnotte) : base(ss,nom,prenom,naissance,adresse,mail,num)
         {
             this.cagnotte = cagnotte;
@@ -21,6 +22,11 @@ namespace HUET_JOUBERT
         {
             get { return cagnotte; }
             set { cagnotte = value; }
+        }
+        public int MontantGlobal
+        {
+            get { return montant_global;}
+            set { montant_global = value;}
         }
     }
 }

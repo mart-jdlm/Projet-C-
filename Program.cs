@@ -39,7 +39,7 @@
             Sauvegarde(clients, nomfichier);
             Console.ReadLine();
             Commande commande1 = new Commande(client1, "Paris", "Angers", 57, "camion-citerne", chauffeur, new DateTime(2024, 4, 2));
-            Commande commande2 = new Commande(client2, "Paris", "Lyon", 103, "camion benne", chauffeur2, new DateTime(2024, 4, 7));
+            Commande commande2 = new Commande(client2, "Paris", "Lyon", 103, "camion benne", chauffeur2, new DateTime(2024, 8, 7));
             List<Commande> commandes=new List<Commande> { commande1, commande2 };
             Moyenne_Commandes moyenne_globale = Moyenne_Prix_Commandes;
             Moyenne_Commandes moyenne_specifique = Moyenne_Prix_Grosses_Commandes;
@@ -54,12 +54,35 @@
             {
                 Console.WriteLine("Cagnotte : " + c.Cagnotte);
             }
+            Console.WriteLine("Commandes client " + client2.Prenom +" "+client2.Nom+ " :");
+            Liste_commandes_client(commandes, client2);
+            DateTime debut = new DateTime(2024, 2, 12);
+            DateTime fin = new DateTime(2024,5,2);
+            Console.WriteLine("Commandes entre le 12 février 2024 et le 2 mai 2024 :");
+            Commandes_periode(commandes, debut, fin);
+            Console.WriteLine("Commandes entre le début de l'année et maintenant :");
+            Commandes_actuelles(commandes);
+            string ville = "Paris";
+            Console.WriteLine("Commandes partant de la même ville " + ville + " :");
+            Commandes_trajet_similaire(commandes, ville);
+            Console.WriteLine("Commande la plus rentable : ");
+            Commande retour=Commande_rentable(commandes);
+            Console.WriteLine("Commande " + retour.Lieu_depart + " vers " + retour.Lieu_arrivee+" à "+retour.Prix+"euros");
         }
+        #region Salarie
         static void Recrutement_chef_equipe (Salarie nouveau)
         {
 
         }
-        static void Recrutement_chaffeur (Salarie nouveau)
+        static void Licenciement_chef_equipe(Salarie licencie)
+        {
+
+        }
+        static void Recrutement_chauffeur (Salarie nouveau)
+        {
+
+        }
+        static void Licenciement_chauffeur(Salarie licencie)
         {
 
         }
@@ -67,6 +90,7 @@
         {
 
         }
+        #endregion
         static int Validation_commande(Commande achat, int chiffre_affaires)
         {
             if (achat.Chauffeur.Dispo==false)
@@ -77,9 +101,31 @@
             {
                 chiffre_affaires = chiffre_affaires + achat.Prix;
                 achat.Customer.Cagnotte = achat.Customer.Cagnotte - achat.Prix;
+                achat.Chauffeur.Experience += 1;
                 Console.WriteLine("Achat effectué");
             }
             return chiffre_affaires;
+        }
+        #region Statistiques
+        static void Commandes_periode (List<Commande> commandes, DateTime debut, DateTime fin)
+        {
+            foreach(Commande c in commandes)
+            {
+                if(c.Date>debut && c.Date<fin)
+                {
+                    Console.WriteLine("Commande " + c.Lieu_depart + " vers " + c.Lieu_arrivee);
+                }
+            }
+        }
+        static void Liste_commandes_client(List<Commande> commandes, Client c)
+        {
+            foreach(Commande com in commandes)
+            {
+                if (com.Customer==c && com.Date>DateTime.Now)
+                {
+                    Console.WriteLine("Commande "+com.Lieu_depart+" vers " +com.Lieu_arrivee);
+                }
+            }
         }
         static void Nombre_livraisons_chauffeur(List<Salarie> entreprise)
         {
@@ -112,6 +158,8 @@
             moyenne= moyenne / commandes.Count;
             return moyenne;
         }
+        #endregion
+        #region Autre
         public static double Moyenne_Prix_Grosses_Commandes(List<Commande> commandes)
         {
             double moyenne = 0.0;
@@ -127,12 +175,66 @@
             moyenne = moyenne / nbr;
             return moyenne;
         }
-        #region gestion clients
+        static void Commandes_actuelles(List<Commande> commandes)
+        {
+            foreach (Commande c in commandes)
+            {
+                if (c.Date>new DateTime(DateTime.Now.Year,1,1) && c.Date<DateTime.Now)
+                {
+                    Console.WriteLine("Commande " + c.Lieu_depart + " vers " + c.Lieu_arrivee);
+                }
+            }
+        }
+        static void Commandes_trajet_similaire(List<Commande> commandes, string ville)
+        {
+            foreach (Commande c in commandes)
+            {
+                if (c.Lieu_depart==ville)
+                {
+                    Console.WriteLine("Commande " + c.Lieu_depart + " vers " + c.Lieu_arrivee);
+                }
+            }
+        }
+        static Commande Commande_rentable(List<Commande> commandes)
+        {
+            Commande retour = commandes[0];
+            foreach(Commande c in commandes)
+            {
+                if (c.Prix>retour.Prix)
+                {
+                    retour= c;
+                }
+            }
+            return retour;
+        }
+        #endregion
+        #region Client
+        public static List<Client> AjouterClient(List<Client> clients, Client ajout)
+        {
+            clients.Add(ajout);
+            return clients;
+        }
+        /*public static List<Client> SupprimerClient(List<Client> clients, string supprime)
+        {
+            for (int i=0;i<clients.Count;i++)
+            {
+                if (clients[i].Nom==supprime)
+                {
+                    
+                }
+            }
+            return clients;
+        }*/
         public static List<Client> TrierParOrdreAlphabetique(List<Client> clients)
         {
             return clients.OrderBy(client => client.Nom).ThenBy(client => client.Prenom).ToList();
         }
+
         // Fonction pour trier une liste de clients par ville
+        public static List<Client> TrierParVille(List<Client> clients)
+        {
+            return clients.OrderBy(client => client.Adresse).ToList();
+        }
 
         /// Méthode pour afficher une liste de clients en utilisant List.ForEach
         public static void AfficherListeClients(List<Client> clients)
@@ -141,6 +243,11 @@
             {
                 Console.WriteLine($"Nom: {client.Nom}, Prénom: {client.Prenom}, Adresse: {client.Adresse}");
             });
+        }
+
+        public static List<Client> TrierParMontantAchatsCumules(List<Client> clients)
+        {
+            return clients.OrderBy(client => client.MontantGlobal).ToList();
         }
         #endregion
         #region sauvegarde
