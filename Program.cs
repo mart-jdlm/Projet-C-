@@ -1,4 +1,8 @@
-﻿using System;
+
+using System.Collections.Generic;
+using System.IO;
+using System;
+using System.Linq;
 
 namespace HUET_JOUBERT
 {
@@ -7,7 +11,7 @@ namespace HUET_JOUBERT
         static void Main(string[] args)
         {
             #region BDD
-            Salarie directeur_general = new Salarie ("Dupond","Directeur Général");
+            Salarie directeur_general = new Salarie("Dupond", "Directeur Général");
             Salarie directrice_commerciale = new Salarie("Fiesta", "Directrice Commerciale");
             Salarie directeur_operations = new Salarie("Fetard", "Directeur des opérations");
             Salarie directrice_RH = new Salarie("Joyeuse", "Directrice des RH");
@@ -29,37 +33,36 @@ namespace HUET_JOUBERT
             Salarie comptable2 = new Salarie("Gautier", "Comptable");
             List<Salarie> entreprise = new List<Salarie> { directeur_general, directrice_commerciale, directeur_operations, directrice_RH, directeur_financier, commercial, commerciale, chef_equipe, chef_equipe2, chauffeur, chauffeur2, chaufeur3, chauffeur4, chauffeur5, formation, contrats, direction_comptable, controleur_gestion, comptable, comptable2 };
             int chiffre_affaires = 0;
-            Client client1 = new Client("Huet", "Valentin",100);
-            Client client2 = new Client("Joubert", "Martin",200);
+            Client client1 = new Client("Huet", "Valentin", 100);
+            Client client2 = new Client("Joubert", "Martin", 200);
             Client client3 = new Client("111111111", "Dupont", "Jean", new DateTime(1980, 5, 15), "Paris", "example1@example.com", "111111111", 100);
             Client client4 = new Client("222222222", "Durand", "Marie", new DateTime(1975, 8, 20), "Lyon", "example2@example.com", "222222222", 150);
             Client client5 = new Client("333333333", "Martin", "Luc", new DateTime(1990, 3, 10), "Marseille", "example3@example.com", "333333333", 200);
             List<Client> clients = new List<Client> { client1, client2, client3, client4, client5 };
             #endregion
-            AfficherListeClients(TrierParOrdreAlphabetique(clients));
             string nomfichier = "sauvegarde.txt";
             Sauvegarde(clients, nomfichier);
             Console.ReadLine();
-            Commande commande1 = new Commande(client1, "Paris", "Angers", "camion-citerne", chauffeur, new DateTime(2024, 4, 2));
-            Commande commande2 = new Commande(client2, "Paris", "Lyon", "camion benne", chauffeur2, new DateTime(2024, 8, 7));
-            List<Commande> commandes=new List<Commande> { };
-            chiffre_affaires = Validation_commande(commandes, commande1, chiffre_affaires);
-            chiffre_affaires = Validation_commande(commandes, commande2, chiffre_affaires);
-            Console.WriteLine("Chiffres d'affaires après commandes : " + chiffre_affaires);
+            Commande commande1 = new Commande(client1, "Paris", "Angers", 57, "camion-citerne", chauffeur, new DateTime(2024, 4, 2));
+            Commande commande2 = new Commande(client2, "Paris", "Lyon", 103, "camion benne", chauffeur2, new DateTime(2024, 8, 7));
+            List<Commande> commandes = new List<Commande> { commande1, commande2 };
             Moyenne_Commandes moyenne_globale = Moyenne_Prix_Commandes;
             Moyenne_Commandes moyenne_specifique = Moyenne_Prix_Grosses_Commandes;
-            Console.WriteLine("Moyenne globale : "+moyenne_globale(commandes));
-            Console.WriteLine("Moyenne spécifique : "+moyenne_specifique(commandes));
+            Console.WriteLine("Moyenne globale : " + moyenne_globale(commandes));
+            Console.WriteLine("Moyenne spécifique : " + moyenne_specifique(commandes));
             Console.WriteLine("Moyenne compte clients : " + Moyenne_Comptes_Clients(clients));
             Nombre_livraisons_chauffeur(entreprise);
+            chiffre_affaires = Validation_commande(commande1, chiffre_affaires);
+            chiffre_affaires = Validation_commande(commande2, chiffre_affaires);
+            Console.WriteLine("Chiffres d'affaires après commandes : " + chiffre_affaires);
             foreach (Client c in clients)
             {
-                Console.WriteLine("Cagnotte " + c.Nom+" : "+c.Cagnotte);
+                Console.WriteLine("Cagnotte : " + c.Cagnotte);
             }
-            Console.WriteLine("Commandes client " + client2.Prenom +" "+client2.Nom+ " :");
+            Console.WriteLine("Commandes client " + client2.Prenom + " " + client2.Nom + " :");
             Liste_commandes_client(commandes, client2);
             DateTime debut = new DateTime(2024, 2, 12);
-            DateTime fin = new DateTime(2024,5,2);
+            DateTime fin = new DateTime(2024, 5, 2);
             Console.WriteLine("Commandes entre le 12 février 2024 et le 2 mai 2024 :");
             Commandes_periode(commandes, debut, fin);
             Console.WriteLine("Commandes entre le début de l'année et maintenant :");
@@ -68,11 +71,12 @@ namespace HUET_JOUBERT
             Console.WriteLine("Commandes partant de la même ville " + ville + " :");
             Commandes_trajet_similaire(commandes, ville);
             Console.WriteLine("Commande la plus rentable : ");
-            Commande retour=Commande_rentable(commandes);
-            Console.WriteLine("Commande " + retour.Lieu_depart + " vers " + retour.Lieu_arrivee+" à "+retour.Prix+"euros");
+            Commande retour = Commande_rentable(commandes);
+            Console.WriteLine("Commande " + retour.Lieu_depart + " vers " + retour.Lieu_arrivee + " à " + retour.Prix + "euros");
+            Console.ReadKey();
         }
         #region Salarie
-        static void Recrutement_chef_equipe (Salarie nouveau)
+        static void Recrutement_chef_equipe(Salarie nouveau)
         {
 
         }
@@ -80,7 +84,7 @@ namespace HUET_JOUBERT
         {
 
         }
-        static void Recrutement_chauffeur (Salarie nouveau)
+        static void Recrutement_chauffeur(Salarie nouveau)
         {
 
         }
@@ -88,43 +92,17 @@ namespace HUET_JOUBERT
         {
 
         }
-        static void Visualisation (List<Salarie> entreprise)
+        static void Visualisation(List<Salarie> entreprise)
         {
 
         }
         #endregion
-        static int Validation_commande(List<Commande> commandes, Commande achat, int chiffre_affaires)
-        {
-            bool declencheur=false;
-            {
-                if (commandes!=null && commandes.Count!=0)
-                {
-                    foreach (Commande c in commandes)
-                    {
-                        if (achat.Chauffeur.Nom == c.Chauffeur.Nom && achat.Date == c.Date)
-                        {
-                            Console.WriteLine("Chauffeur indispo ==> Commande impossible");
-                            declencheur = true;
-                        }
-                    }
-                }
-            }         
-            if (declencheur==false)
-            {
-                chiffre_affaires = chiffre_affaires + achat.Prix;
-                achat.Customer.Cagnotte = achat.Customer.Cagnotte - achat.Prix;
-                achat.Chauffeur.Experience += 1;
-                commandes.Add(achat);
-                Console.WriteLine("Achat effectué");
-            }
-            return chiffre_affaires;
-        }
         #region Statistiques
-        static void Commandes_periode (List<Commande> commandes, DateTime debut, DateTime fin)
+        static void Commandes_periode(List<Commande> commandes, DateTime debut, DateTime fin)
         {
-            foreach(Commande c in commandes)
+            foreach (Commande c in commandes)
             {
-                if(c.Date>debut && c.Date<fin)
+                if (c.Date > debut && c.Date < fin)
                 {
                     Console.WriteLine("Commande " + c.Lieu_depart + " vers " + c.Lieu_arrivee);
                 }
@@ -132,11 +110,11 @@ namespace HUET_JOUBERT
         }
         static void Liste_commandes_client(List<Commande> commandes, Client c)
         {
-            foreach(Commande com in commandes)
+            foreach (Commande com in commandes)
             {
-                if (com.Customer==c && com.Date>DateTime.Now)
+                if (com.Customer == c && com.Date > DateTime.Now)
                 {
-                    Console.WriteLine("Commande "+com.Lieu_depart+" vers " +com.Lieu_arrivee);
+                    Console.WriteLine("Commande " + com.Lieu_depart + " vers " + com.Lieu_arrivee);
                 }
             }
         }
@@ -144,16 +122,16 @@ namespace HUET_JOUBERT
         {
             foreach (Salarie s in entreprise)
             {
-                if (s.Poste=="Chauffeur")
+                if (s.Poste == "Chauffeur")
                 {
-                    Console.WriteLine(s.Nom+" : "+s.Experience+" livraisons déjà effectuées");
-                }             
+                    Console.WriteLine(s.Nom + " : " + s.Experience + " livraisons déjà effectuées");
+                }
             }
         }
         public static double Moyenne_Comptes_Clients(List<Client> clients)
         {
             double moyenne = 0.0;
-            foreach(Client c in clients)
+            foreach (Client c in clients)
             {
                 moyenne = moyenne + c.Cagnotte;
             }
@@ -166,23 +144,38 @@ namespace HUET_JOUBERT
             double moyenne = 0.0;
             foreach (Commande c in commandes)
             {
-                moyenne=moyenne+c.Prix;
+                moyenne = moyenne + c.Prix;
             }
-            moyenne= moyenne / commandes.Count;
+            moyenne = moyenne / commandes.Count;
             return moyenne;
         }
         #endregion
         #region Autre
+        static int Validation_commande(Commande achat, int chiffre_affaires)
+        {
+            if (achat.Chauffeur.Dispo == false)
+            {
+                Console.WriteLine("Chauffeur indispo ==> Commande impossible");
+            }
+            else
+            {
+                chiffre_affaires = chiffre_affaires + achat.Prix;
+                achat.Customer.Cagnotte = achat.Customer.Cagnotte - achat.Prix;
+                achat.Chauffeur.Experience += 1;
+                Console.WriteLine("Achat effectué");
+            }
+            return chiffre_affaires;
+        }
         public static double Moyenne_Prix_Grosses_Commandes(List<Commande> commandes)
         {
             double moyenne = 0.0;
             double nbr = 0.0;
             foreach (Commande c in commandes)
             {
-                if (c.Prix>100)
+                if (c.Prix > 100)
                 {
-                    moyenne=moyenne+c.Prix;
-                    nbr=nbr+1.0;
+                    moyenne = moyenne + c.Prix;
+                    nbr = nbr + 1.0;
                 }
             }
             moyenne = moyenne / nbr;
@@ -192,7 +185,7 @@ namespace HUET_JOUBERT
         {
             foreach (Commande c in commandes)
             {
-                if (c.Date>new DateTime(DateTime.Now.Year,1,1) && c.Date<DateTime.Now)
+                if (c.Date > new DateTime(DateTime.Now.Year, 1, 1) && c.Date < DateTime.Now)
                 {
                     Console.WriteLine("Commande " + c.Lieu_depart + " vers " + c.Lieu_arrivee);
                 }
@@ -202,7 +195,7 @@ namespace HUET_JOUBERT
         {
             foreach (Commande c in commandes)
             {
-                if (c.Lieu_depart==ville)
+                if (c.Lieu_depart == ville)
                 {
                     Console.WriteLine("Commande " + c.Lieu_depart + " vers " + c.Lieu_arrivee);
                 }
@@ -211,11 +204,11 @@ namespace HUET_JOUBERT
         static Commande Commande_rentable(List<Commande> commandes)
         {
             Commande retour = commandes[0];
-            foreach(Commande c in commandes)
+            foreach (Commande c in commandes)
             {
-                if (c.Prix>retour.Prix)
+                if (c.Prix > retour.Prix)
                 {
-                    retour= c;
+                    retour = c;
                 }
             }
             return retour;
@@ -229,9 +222,9 @@ namespace HUET_JOUBERT
         }
         public static List<Client> SupprimerClient(List<Client> clients, string supprime)
         {
-            foreach(Client c in clients)
+            foreach (Client c in clients)
             {
-                if (c.Nom==supprime)
+                if (c.Nom == supprime)
                 {
                     clients.Remove(c);
                 }
@@ -243,7 +236,7 @@ namespace HUET_JOUBERT
             Console.WriteLine("Quel attribut voulez-vous modifier ?");
             Console.WriteLine("1:ss, 2:nom, 3:prenom, 4:adresse, 5:mail ou 6:num");
             int rep = Convert.ToInt32(Console.ReadLine());
-            string modif=Console.ReadLine();
+            string modif = Console.ReadLine();
             switch (rep)
             {
                 case 1:
@@ -266,31 +259,57 @@ namespace HUET_JOUBERT
                     break;
             }
         }
-        static List<Client> TrierParOrdreAlphabetique(List<Client> clients)
+        public static List<Client> TrierParOrdreAlphabetique(List<Client> clients)
         {
-            int n = clients.Count;
-            for (int i = 1; i < n; i++)
+            List<Client> sortedClients = new List<Client>();
+
+            foreach (var client in clients)
             {
-                Client comparaison = clients[i];
-                int j = i - 1;
-                while (j >= 0 && clients[j].CompareTo(comparaison) > 0)
+                bool inserted = false;
+                for (int i = 0; i < sortedClients.Count; i++)
                 {
-                    clients[j + 1] = clients[j];
-                    j = j - 1;
+                    if (string.Compare(client.Nom, sortedClients[i].Nom, StringComparison.OrdinalIgnoreCase) < 0 ||
+                        (string.Compare(client.Nom, sortedClients[i].Nom, StringComparison.OrdinalIgnoreCase) == 0 &&
+                         string.Compare(client.Prenom, sortedClients[i].Prenom, StringComparison.OrdinalIgnoreCase) < 0))
+                    {
+                        sortedClients.Insert(i, client);
+                        inserted = true;
+                        break;
+                    }
                 }
-                clients[j + 1] = comparaison;
+                if (!inserted)
+                {
+                    sortedClients.Add(client);
+                }
             }
-            return clients;
+
+            return sortedClients;
         }
-        /*public static List<Client> TrierParOrdreAlphabetique(List<Client> clients)
-        {
-            return clients.OrderBy(client => client.Nom).ThenBy(client => client.Prenom).ToList();
-        }*/
 
         // Fonction pour trier une liste de clients par ville
         public static List<Client> TrierParVille(List<Client> clients)
         {
-            return clients.OrderBy(client => client.Adresse).ToList();
+            List<Client> sortedClients = new List<Client>();
+
+            foreach (var client in clients)
+            {
+                bool inserted = false;
+                for (int i = 0; i < sortedClients.Count; i++)
+                {
+                    if (string.Compare(client.Adresse, sortedClients[i].Adresse, StringComparison.OrdinalIgnoreCase) < 0)
+                    {
+                        sortedClients.Insert(i, client);
+                        inserted = true;
+                        break;
+                    }
+                }
+                if (!inserted)
+                {
+                    sortedClients.Add(client);
+                }
+            }
+
+            return sortedClients;
         }
 
         /// Méthode pour afficher une liste de clients en utilisant List.ForEach
@@ -304,7 +323,27 @@ namespace HUET_JOUBERT
 
         public static List<Client> TrierParMontantAchatsCumules(List<Client> clients)
         {
-            return clients.OrderBy(client => client.MontantGlobal).ToList();
+            List<Client> sortedClients = new List<Client>();
+
+            foreach (var client in clients)
+            {
+                bool inserted = false;
+                for (int i = 0; i < sortedClients.Count; i++)
+                {
+                    if (client.MontantGlobal < sortedClients[i].MontantGlobal)
+                    {
+                        sortedClients.Insert(i, client);
+                        inserted = true;
+                        break;
+                    }
+                }
+                if (!inserted)
+                {
+                    sortedClients.Add(client);
+                }
+            }
+
+            return sortedClients;
         }
         #endregion
         #region sauvegarde
