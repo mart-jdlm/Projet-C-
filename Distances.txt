@@ -1,0 +1,14 @@
+Paris	Rouen	133	01:45:00
+Paris	Lyon	464	04:55:00
+Paris	Angers	294	03:11:00
+Angers	La Rochelle	187	02:20:00
+La Rochelle	Bordeaux	183	01:38:00
+Bordeaux	Biarritz	202	01:47:00
+Biarritz	Toulouse	309	02:39:00
+Pau	Toulouse	193	01:41:00
+Toulouse	Nimes	289	02:26:00
+Montpellier	Nimes	52	00:35:00
+Nimes	Marseilles	126	01:13:00
+Marseille	Avignon	99	01:00:00
+Monaco	Marseille	224	02:03:00
+Toulon	Monaco	169	01:35:00
