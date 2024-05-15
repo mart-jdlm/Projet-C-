@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace HUET_JOUBERT
 {
-    class Salarie : Personne
+    class Salarie : Personne,IIdentification<Salarie>
     {
         DateTime entree;
         string poste;
         int salaire;
-        bool dispo = true;
         int experience = 0;
         public Salarie(string ss, string nom, string prenom, DateTime naissance, string adresse, string mail, string num, DateTime entree, string poste, int salaire) : base(ss, nom, prenom, naissance, adresse, mail, num)
         {
@@ -38,15 +37,14 @@ namespace HUET_JOUBERT
             get { return salaire; }
             set { salaire = value; }
         }
-        public bool Dispo
-        {
-            get { return dispo; }
-            set { dispo=value; }
-        }
         public int Experience
         {
             get { return experience; }
             set { experience = value; }
+        }
+        public void IIdentification(Salarie s)
+        {
+            Console.WriteLine(s.Prenom + " " + s.Nom);
         }
     }
 }

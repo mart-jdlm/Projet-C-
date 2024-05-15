@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HUET_JOUBERT
 {
-    class Personne
+    abstract class Personne
     {
         string ss;
         string nom;

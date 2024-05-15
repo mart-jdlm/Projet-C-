@@ -15,15 +15,27 @@ namespace HUET_JOUBERT
         string vehicule;
         Salarie chauffeur;
         DateTime date;
-        public Commande(Client customer, string lieu_depart, string lieu_arrivee, int prix, string vehicule, Salarie chauffeur, DateTime date)
+        public Commande(Client customer, string lieu_depart, string lieu_arrivee, string vehicule,Salarie chauffeur, DateTime date)
         {
             this.customer = customer;
             this.lieu_depart = lieu_depart;
             this.lieu_arrivee = lieu_arrivee;
-            this.prix = prix;
             this.vehicule = vehicule;
-            this.chauffeur = chauffeur;
+            this.chauffeur=chauffeur;
             this.date = date;
+            this.prix = 0;
+            if (vehicule=="Voiture")
+            {
+                prix = prix + 20;
+            }
+            else if (vehicule=="Camionnette")
+            {
+                prix = prix + 30;
+            }
+            else
+            {
+                prix = prix + 50;
+            }
         }
         public Client Customer
         {

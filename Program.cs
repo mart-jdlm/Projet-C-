@@ -1,4 +1,6 @@
-﻿namespace HUET_JOUBERT
+﻿using System;
+
+namespace HUET_JOUBERT
 {
     class Program
     {
@@ -38,21 +40,21 @@
             string nomfichier = "sauvegarde.txt";
             Sauvegarde(clients, nomfichier);
             Console.ReadLine();
-            Commande commande1 = new Commande(client1, "Paris", "Angers", 57, "camion-citerne", chauffeur, new DateTime(2024, 4, 2));
-            Commande commande2 = new Commande(client2, "Paris", "Lyon", 103, "camion benne", chauffeur2, new DateTime(2024, 8, 7));
-            List<Commande> commandes=new List<Commande> { commande1, commande2 };
+            Commande commande1 = new Commande(client1, "Paris", "Angers", "camion-citerne", chauffeur, new DateTime(2024, 4, 2));
+            Commande commande2 = new Commande(client2, "Paris", "Lyon", "camion benne", chauffeur2, new DateTime(2024, 8, 7));
+            List<Commande> commandes=new List<Commande> { };
+            chiffre_affaires = Validation_commande(commandes, commande1, chiffre_affaires);
+            chiffre_affaires = Validation_commande(commandes, commande2, chiffre_affaires);
+            Console.WriteLine("Chiffres d'affaires après commandes : " + chiffre_affaires);
             Moyenne_Commandes moyenne_globale = Moyenne_Prix_Commandes;
             Moyenne_Commandes moyenne_specifique = Moyenne_Prix_Grosses_Commandes;
             Console.WriteLine("Moyenne globale : "+moyenne_globale(commandes));
             Console.WriteLine("Moyenne spécifique : "+moyenne_specifique(commandes));
             Console.WriteLine("Moyenne compte clients : " + Moyenne_Comptes_Clients(clients));
             Nombre_livraisons_chauffeur(entreprise);
-            chiffre_affaires=Validation_commande(commande1, chiffre_affaires);
-            chiffre_affaires=Validation_commande(commande2, chiffre_affaires);
-            Console.WriteLine("Chiffres d'affaires après commandes : " + chiffre_affaires);
             foreach (Client c in clients)
             {
-                Console.WriteLine("Cagnotte : " + c.Cagnotte);
+                Console.WriteLine("Cagnotte " + c.Nom+" : "+c.Cagnotte);
             }
             Console.WriteLine("Commandes client " + client2.Prenom +" "+client2.Nom+ " :");
             Liste_commandes_client(commandes, client2);
@@ -91,17 +93,28 @@
 
         }
         #endregion
-        static int Validation_commande(Commande achat, int chiffre_affaires)
+        static int Validation_commande(List<Commande> commandes, Commande achat, int chiffre_affaires)
         {
-            if (achat.Chauffeur.Dispo==false)
+            bool declencheur=false;
             {
-                Console.WriteLine("Chauffeur indispo ==> Commande impossible");
-            }
-            else
+                if (commandes!=null && commandes.Count!=0)
+                {
+                    foreach (Commande c in commandes)
+                    {
+                        if (achat.Chauffeur.Nom == c.Chauffeur.Nom && achat.Date == c.Date)
+                        {
+                            Console.WriteLine("Chauffeur indispo ==> Commande impossible");
+                            declencheur = true;
+                        }
+                    }
+                }
+            }         
+            if (declencheur==false)
             {
                 chiffre_affaires = chiffre_affaires + achat.Prix;
                 achat.Customer.Cagnotte = achat.Customer.Cagnotte - achat.Prix;
                 achat.Chauffeur.Experience += 1;
+                commandes.Add(achat);
                 Console.WriteLine("Achat effectué");
             }
             return chiffre_affaires;
@@ -253,10 +266,26 @@
                     break;
             }
         }
-        public static List<Client> TrierParOrdreAlphabetique(List<Client> clients)
+        static List<Client> TrierParOrdreAlphabetique(List<Client> clients)
+        {
+            int n = clients.Count;
+            for (int i = 1; i < n; i++)
+            {
+                Client comparaison = clients[i];
+                int j = i - 1;
+                while (j >= 0 && clients[j].CompareTo(comparaison) > 0)
+                {
+                    clients[j + 1] = clients[j];
+                    j = j - 1;
+                }
+                clients[j + 1] = comparaison;
+            }
+            return clients;
+        }
+        /*public static List<Client> TrierParOrdreAlphabetique(List<Client> clients)
         {
             return clients.OrderBy(client => client.Nom).ThenBy(client => client.Prenom).ToList();
-        }
+        }*/
 
         // Fonction pour trier une liste de clients par ville
         public static List<Client> TrierParVille(List<Client> clients)

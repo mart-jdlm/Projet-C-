@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HUET_JOUBERT
 {
-    class Client : Personne
+    class Client : Personne, IComparable<Client>, IIdentification<Client>
     {
         int cagnotte;
         int montant_global = 0;
@@ -27,6 +27,15 @@ namespace HUET_JOUBERT
         {
             get { return montant_global;}
             set { montant_global = value;}
+        }
+        public int CompareTo(Client other)
+        {
+            if (other == null) return 1;
+            return this.Nom.CompareTo(other.Nom);
+        }
+        public void IIdentification(Client c)
+        {
+            Console.WriteLine(c.Prenom+" "+c.Nom);
         }
     }
 }
