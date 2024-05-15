@@ -214,17 +214,45 @@
             clients.Add(ajout);
             return clients;
         }
-        /*public static List<Client> SupprimerClient(List<Client> clients, string supprime)
+        public static List<Client> SupprimerClient(List<Client> clients, string supprime)
         {
-            for (int i=0;i<clients.Count;i++)
+            foreach(Client c in clients)
             {
-                if (clients[i].Nom==supprime)
+                if (c.Nom==supprime)
                 {
-                    
+                    clients.Remove(c);
                 }
             }
             return clients;
-        }*/
+        }
+        public static void ModifierClient(Client c)
+        {
+            Console.WriteLine("Quel attribut voulez-vous modifier ?");
+            Console.WriteLine("1:ss, 2:nom, 3:prenom, 4:adresse, 5:mail ou 6:num");
+            int rep = Convert.ToInt32(Console.ReadLine());
+            string modif=Console.ReadLine();
+            switch (rep)
+            {
+                case 1:
+                    c.SS = modif;
+                    break;
+                case 2:
+                    c.Nom = modif;
+                    break;
+                case 3:
+                    c.Prenom = modif;
+                    break;
+                case 4:
+                    c.Adresse = modif;
+                    break;
+                case 5:
+                    c.Mail = modif;
+                    break;
+                case 6:
+                    c.Num = modif;
+                    break;
+            }
+        }
         public static List<Client> TrierParOrdreAlphabetique(List<Client> clients)
         {
             return clients.OrderBy(client => client.Nom).ThenBy(client => client.Prenom).ToList();
