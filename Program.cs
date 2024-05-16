@@ -61,7 +61,6 @@ namespace HUET_JOUBERT
 
             // Affichage de l'organigramme
             organigramme.AfficherOrganigramme(organigramme.Racine);
-            Console.Read();
             Client client1 = new Client("Huet", "Valentin", "Maurepas",100);
             Client client2 = new Client("Joubert", "Martin", "Asnières",200);
             Client client3 = new Client("111111111", "Dupont", "Jean", new DateTime(1980, 5, 15), "Paris", "example1@example.com", "111111111", 100);
