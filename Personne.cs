@@ -29,10 +29,11 @@ namespace HUET_JOUBERT
         {
             this.nom = nom;
         }
-        public Personne(string nom, string prenom)
+        public Personne(string nom, string prenom, string adresse)
         {
             this.nom=nom;
             this.prenom = prenom;
+            this.adresse = adresse;
         }
         public string SS
         {

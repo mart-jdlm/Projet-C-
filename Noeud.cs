@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HUET_JOUBERT
 {
-    internal class Noeud
+    class Noeud
     {
         public Salarie Employe { get; set; }
         public List<Noeud> Subordonnes { get; set; }

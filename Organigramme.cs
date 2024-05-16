@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HUET_JOUBERT
 {
-    internal class Organigramme
+    class Organigramme
     {
         public Noeud Racine { get; set; }
 

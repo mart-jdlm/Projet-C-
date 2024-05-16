@@ -14,7 +14,7 @@ namespace HUET_JOUBERT
         {
             this.cagnotte = cagnotte;
         }
-        public Client(string nom, string prenom, int cagnotte) : base(nom,prenom)
+        public Client(string nom, string prenom, string adresse, int cagnotte) : base(nom,prenom,adresse)
         {
             this.cagnotte= cagnotte;
         }
