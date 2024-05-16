@@ -477,29 +477,30 @@ namespace HUET_JOUBERT
         }
         #endregion
         #region sauvegarde
-        static void Sauvegarde(List<Client> clients, string nomfichier)
+        static void Sauvegarde(List<Commande> commandes, string nomfichier)
         {
             try
             {
                 using (StreamWriter sw = new StreamWriter(nomfichier))
                 {
-                    foreach (var client in clients)
+                    foreach (var commande in commandes)
                     {
-                        string line = $"{client.SS},{client.Nom},{client.Prenom},{client.Naissance},{client.Adresse},{client.Mail},{client.Num},{client.Cagnotte}";
+                        string line = $"{commande.Lieu_depart},{commande.Lieu_arrivee},{commande.Prix},{commande.Vehicule},{commande.Date}";
                         sw.WriteLine(line);
                     }
                 }
-                Console.WriteLine("Clients saved successfully!");
+                Console.WriteLine("Commandes saved successfully!");
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error saving clients: {e.Message}");
+                Console.WriteLine($"Error saving commandes: {e.Message}");
             }
         }
 
-        static List<Client> ImporterClients(string nomfichier)
+
+        static List<Commande> ChargerCommandes(string nomfichier)
         {
-            List<Client> clients = new List<Client>();
+            List<Commande> commandes = new List<Commande>();
 
             try
             {
@@ -508,33 +509,29 @@ namespace HUET_JOUBERT
                     string line;
                     while ((line = sr.ReadLine()) != null)
                     {
-                        string[] parts = line.Split(',');
-                        if (parts.Length == 8)
-                        {
-                            string ss = parts[0].Trim();
-                            string nom = parts[1].Trim();
-                            string prenom = parts[2].Trim();
-                            DateTime naissance = DateTime.Parse(parts[3].Trim());
-                            string adresse = parts[4].Trim();
-                            string mail = parts[5].Trim();
-                            string num = parts[6].Trim();
-                            int cagnotte = int.Parse(parts[7].Trim());
+                        string[] values = line.Split(',');
 
-                            Client client = new Client(ss, nom, prenom, naissance, adresse, mail, num, cagnotte);
-                            clients.Add(client);
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Invalid line: {line}");
-                        }
+                        // Créer un objet Commande à partir des données lues
+                        Commande commande = new Commande(
+                            null, // Client non sauvegardé
+                            values[0],
+                            values[1],
+                            int.Parse(values[2]),
+                            values[3],
+                            null, // Chauffeur non sauvegardé
+                            DateTime.Parse(values[4])
+                        );
+
+                        commandes.Add(commande);
                     }
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error reading file: {e.Message}");
+                Console.WriteLine($"Error loading commandes: {e.Message}");
             }
-            return clients;
+
+            return commandes;
         }
         #endregion
     }
