@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,28 +8,40 @@ namespace HUET_JOUBERT
 {
     class Organigramme
     {
+        /// <summary>
+        /// Propriété de la racine de l'organigramme
+        /// </summary>
         public Noeud Racine { get; set; }
-
+        /// <summary>
+        /// Constructeur de l'organigramme à partir du patron
+        /// </summary>
+        /// <param name="employeRacine">Patron en haut de l'organigramme</param>
         public Organigramme(Salarie employeRacine)
         {
             Racine = new Noeud(employeRacine);
         }
-
-        // Méthode pour embaucher un employé et l'ajouter à l'organigramme
+        /// <summary>
+        /// Ajoute un salarié embauché dans l'organigramme
+        /// </summary>
+        /// <param name="nouvelEmploye">Employé recruté à ajouter</param>
+        /// <param name="manager">Son n+1</param>
         public void Embaucher(Salarie nouvelEmploye, Noeud manager)
         {
             Noeud nouveauNoeud = new Noeud(nouvelEmploye);
             manager.AjouterSubordonne(nouveauNoeud);
         }
-
-        // Méthode récursive pour trouver un employé dans l'organigramme
+        /// <summary>
+        /// Trouver le noeud correspondant à un certain employé recherché
+        /// </summary>
+        /// <param name="noeudCourant">Noeud à étudier</param>
+        /// <param name="employe">Employé à retrouver</param>
+        /// <returns>Noeud associé à la place de l'employé dans l'organigramme</returns>
         private Noeud TrouverNoeud(Noeud noeudCourant, Salarie employe)
         {
             if (noeudCourant.Employe == employe)
             {
                 return noeudCourant;
             }
-
             foreach (Noeud sousNoeud in noeudCourant.Subordonnes)
             {
                 Noeud noeudTrouve = TrouverNoeud(sousNoeud, employe);
@@ -38,11 +50,12 @@ namespace HUET_JOUBERT
                     return noeudTrouve;
                 }
             }
-
             return null;
         }
-
-        // Méthode pour licencier un employé et le retirer de l'organigramme
+        /// <summary>
+        /// Retire de l'organigramme un employé viré 
+        /// </summary>
+        /// <param name="employe">Employé viré à retirer</param>
         public void Licencier(Salarie employe)
         {
             // Recherche de l'employé dans l'organigramme
@@ -57,8 +70,12 @@ namespace HUET_JOUBERT
                 }
             }
         }
-
-        // Méthode récursive pour trouver le parent d'un employé dans l'organigramme
+        /// <summary>
+        /// Trouver le n+1 d'un employé
+        /// </summary>
+        /// <param name="noeudCourant">Noeud à étudier</param>
+        /// <param name="employe">Employé dont on cherche son n+1</param>
+        /// <returns>Noeud associé au n+1 de l'employé en paramètre</returns>
         private Noeud TrouverParent(Noeud noeudCourant, Salarie employe)
         {
             foreach (Noeud sousNoeud in noeudCourant.Subordonnes)
@@ -76,10 +93,13 @@ namespace HUET_JOUBERT
                     }
                 }
             }
-
             return null;
         }
-        // Méthode pour afficher l'organigramme
+        /// <summary>
+        /// Affiche l'organigramme
+        /// </summary>
+        /// <param name="noeud">Noeud dans lequel passera chaque employé</param>
+        /// <param name="prefixe">Délimitateur</param>
         public void AfficherOrganigramme(Noeud noeud, string prefixe = "")
         {
             if (noeud == null) return;

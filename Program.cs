@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System;
 using System.Linq;
@@ -7,10 +7,12 @@ namespace HUET_JOUBERT
 {
     class Program
     {
+        /// <summary>
+        /// Programme principal de l'application
+        /// </summary>
+        /// <param name="args">Paramètres C#</param>
         static void Main(string[] args)
         {
-            foreach (string v in GestionDistance.PlusCourtChemin("Paris", "Lyn")) Console.WriteLine(v);
-            Console.WriteLine(GestionDistance.CalculerDistanceTotale("Paris", "Lon"));
             #region BDD
             int rep = 15;
             List<Commande> commandes = new List<Commande> { };
@@ -36,50 +38,42 @@ namespace HUET_JOUBERT
             Salarie comptable2 = new Salarie("Gautier", "Comptable");
             List<Salarie> entreprise = new List<Salarie> { directeur_general, directrice_commerciale, directeur_operations, directrice_RH, directeur_financier, commercial, commerciale, chef_equipe, chef_equipe2, chauffeur, chauffeur2, chaufeur3, chauffeur4, chauffeur5, formation, contrats, direction_comptable, controleur_gestion, comptable, comptable2 };
             Organigramme organigramme = new Organigramme(directeur_general);
-
-            // Embauche des employés
             organigramme.Embaucher(directrice_commerciale, organigramme.Racine);
             organigramme.Embaucher(directeur_operations, organigramme.Racine);
             organigramme.Embaucher(directrice_RH, organigramme.Racine);
             organigramme.Embaucher(directeur_financier, organigramme.Racine);
-
             organigramme.Embaucher(commercial, organigramme.Racine.Subordonnes[0]);
             organigramme.Embaucher(commerciale, organigramme.Racine.Subordonnes[0]);
             organigramme.Embaucher(chef_equipe, organigramme.Racine.Subordonnes[1]);
             organigramme.Embaucher(chef_equipe2, organigramme.Racine.Subordonnes[1]);
-
             organigramme.Embaucher(chauffeur, organigramme.Racine.Subordonnes[1].Subordonnes[0]);
             organigramme.Embaucher(chauffeur2, organigramme.Racine.Subordonnes[1].Subordonnes[0]);
             organigramme.Embaucher(chaufeur3, organigramme.Racine.Subordonnes[1].Subordonnes[0]);
             organigramme.Embaucher(chauffeur4, organigramme.Racine.Subordonnes[1].Subordonnes[1]);
             organigramme.Embaucher(chauffeur5, organigramme.Racine.Subordonnes[1].Subordonnes[1]);
-
             organigramme.Embaucher(formation, organigramme.Racine.Subordonnes[2]);
             organigramme.Embaucher(contrats, organigramme.Racine.Subordonnes[2]);
             organigramme.Embaucher(direction_comptable, organigramme.Racine.Subordonnes[3]);
             organigramme.Embaucher(controleur_gestion, organigramme.Racine.Subordonnes[3]);
             organigramme.Embaucher(comptable, organigramme.Racine.Subordonnes[3].Subordonnes[0]);
             organigramme.Embaucher(comptable2, organigramme.Racine.Subordonnes[3].Subordonnes[0]);
-
-            // Affichage de l'organigramme
-            organigramme.AfficherOrganigramme(organigramme.Racine);
             Client client1 = new Client("Huet", "Valentin", "Maurepas",100);
             Client client2 = new Client("Joubert", "Martin", "Asnières",200);
             Client client3 = new Client("111111111", "Dupont", "Jean", new DateTime(1980, 5, 15), "Paris", "example1@example.com", "111111111", 100);
             Client client4 = new Client("222222222", "Durand", "Marie", new DateTime(1975, 8, 20), "Lyon", "example2@example.com", "222222222", 150);
             Client client5 = new Client("333333333", "Martin", "Luc", new DateTime(1990, 3, 10), "Marseille", "example3@example.com", "333333333", 200);
             List<Client> clients = new List<Client> { client1, client2, client3, client4, client5 };
-            Noeud noeud = new Noeud(directeur_general);
-            Organigramme orga = new Organigramme(directeur_general);
             int chiffre_affaires = 0;
             Commande commande1 = new Commande(client1, "Paris", "Angers", 37, "camion-citerne", chauffeur, new DateTime(2024, 4, 2));
-            Commande commande2 = new Commande(client2, "Angers", "Lyon", 55, "camion benne", chauffeur2, new DateTime(2024, 8, 7));
+            Commande commande2 = new Commande(client2, "Angers", "La Rochelle", 55, "camion benne", chauffeur2, new DateTime(2024, 8, 7));
             chiffre_affaires = Validation_commande(commandes, commande1, chiffre_affaires);
             chiffre_affaires = Validation_commande(commandes, commande2, chiffre_affaires);
+            Console.WriteLine();
             Console.WriteLine("Chiffres d'affaires après commandes : " + chiffre_affaires);
             #endregion
             while (rep!=0)
             {
+                Console.WriteLine();
                 Console.WriteLine("A quel module souhaitez-vous accéder ?");
                 Console.WriteLine("1:Clients ; 2:Salariés ; 3:Commandes ; 4:Statistiques ; 5:Autres ; 0:Quitter l'appli");
                 rep = Convert.ToInt32(Console.ReadLine());
@@ -130,15 +124,16 @@ namespace HUET_JOUBERT
                         switch (rep_salaries)
                         {
                             case 1:
-                                orga.AfficherOrganigramme(noeud, "");
+                                organigramme.AfficherOrganigramme(organigramme.Racine);
                                 break;
                             case 2:
-                                orga.Licencier(chaufeur3);
-                                orga.AfficherOrganigramme(noeud, "");
+                                organigramme.Licencier(chaufeur3);
+                                organigramme.AfficherOrganigramme(organigramme.Racine);
                                 break;
                             case 3:
                                 Salarie chauffeur6 = new Salarie("Rikou", "Chauffeur");
-                                orga.Embaucher(chauffeur6, new Noeud(chef_equipe));
+                                organigramme.Embaucher(chauffeur6, organigramme.Racine.Subordonnes[1].Subordonnes[0]);
+                                organigramme.AfficherOrganigramme(organigramme.Racine);
                                 break;
                         }
                         Console.ReadLine();
@@ -156,6 +151,7 @@ namespace HUET_JOUBERT
                                 {
                                     Console.WriteLine("Cagnotte " + c.Nom + " : " + c.Cagnotte);
                                 }
+                                Console.WriteLine();
                                 Console.WriteLine("Chiffres d'affaires après commandes : " + chiffre_affaires);
                                 Console.WriteLine();
                                 AfficherCommandes(commandes);
@@ -175,9 +171,11 @@ namespace HUET_JOUBERT
                                 {
                                     Console.WriteLine("Cagnotte " + c.Nom + " : " + c.Cagnotte);
                                 }
+                                Console.WriteLine();
                                 Console.WriteLine("Chiffres d'affaires après commandes : " + chiffre_affaires);
                                 Console.WriteLine();
                                 AfficherCommandes(commandes);
+                                Console.WriteLine();
                                 break;
                         }      
                         Console.ReadLine();
@@ -228,32 +226,17 @@ namespace HUET_JOUBERT
                 }
             }
             string nomfichier = "sauvegarde.txt";
-            Sauvegarde(clients, nomfichier);
+            Sauvegarde(commandes, nomfichier);
             Console.ReadLine();
         }
-        #region Salarie
-        static void Recrutement_chef_equipe (Salarie nouveau)
-        {
-
-        }
-        static void Licenciement_chef_equipe(Salarie licencie)
-        {
-
-        }
-        static void Recrutement_chauffeur (Salarie nouveau)
-        {
-
-        }
-        static void Licenciement_chauffeur(Salarie licencie)
-        {
-
-        }
-        static void Visualisation (List<Salarie> entreprise)
-        {
-
-        }
-        #endregion
         #region Commande
+        /// <summary>
+        /// Invalider ou valider une commande et effectuer la transaction
+        /// </summary>
+        /// <param name="commandes">Liste de toutes les commandes validées</param>
+        /// <param name="achat">Commande à potentiellement valider</param>
+        /// <param name="chiffre_affaires">Chiffre d'affaires de l'entrprise</param>
+        /// <returns>Nouveau chiffre d'affaires de l'entrprise après cette nouvelle commande</returns>
         static int Validation_commande(List<Commande> commandes, Commande achat, int chiffre_affaires)
         {
             bool declencheur = false;
@@ -272,26 +255,43 @@ namespace HUET_JOUBERT
             }
             if (declencheur == false)
             {
+                Console.WriteLine();
+                Console.WriteLine("Achat effectué");
+                Console.WriteLine();
+                Console.WriteLine("Chemin : ");
+                foreach (string v in GestionDistance.PlusCourtChemin(achat.Lieu_depart, achat.Lieu_arrivee)) Console.WriteLine(v);
+                Console.WriteLine();
+                Console.WriteLine("Nombre de kilomètres : "+GestionDistance.CalculerDistanceTotale(achat.Lieu_depart,achat.Lieu_arrivee));
                 chiffre_affaires = chiffre_affaires + achat.Prix;
                 achat.Customer.Cagnotte = achat.Customer.Cagnotte - achat.Prix;
+                achat.Customer.MontantGlobal=achat.Customer.MontantGlobal+achat.Prix;
                 achat.Chauffeur.Experience += 1;
                 commandes.Add(achat);
-                Console.WriteLine("Achat effectué");
             }
             return chiffre_affaires;
         }
+        /// <summary>
+        /// Affiche l'ensemble des commandes déjà validées
+        /// </summary>
+        /// <param name="commandes">Liste des commandes déjà validées</param>
         static void AfficherCommandes(List<Commande> commandes)
         {
             if (commandes!=null && commandes.Count!=0)
             {
                 foreach(Commande c in commandes)
                 {
-                    Console.WriteLine("Commande " + c.Customer.Nom + " à " + c.Prix + " de " + c.Lieu_depart + " à " + c.Lieu_arrivee);
+                    Console.WriteLine("Commande " + c.Customer.Nom + " à " + c.Prix + " euros de " + c.Lieu_depart + " à " + c.Lieu_arrivee);
                 }
             }
         }
         #endregion
         #region Statistiques
+        /// <summary>
+        /// Commandes validées durant une certaine période
+        /// </summary>
+        /// <param name="commandes">Liste de toutes les commandes validées</param>
+        /// <param name="debut">Début de cette période à étudier</param>
+        /// <param name="fin">Fin de cette période</param>
         static void Commandes_periode (List<Commande> commandes, DateTime debut, DateTime fin)
         {
             foreach(Commande c in commandes)
@@ -302,6 +302,11 @@ namespace HUET_JOUBERT
                 }
             }
         }
+        /// <summary>
+        /// Affiche l'ensemble des commandes validées d'un certain client
+        /// </summary>
+        /// <param name="commandes">Liste de toutes les commndes validées</param>
+        /// <param name="c">Client dont on cherche ses commandes</param>
         static void Liste_commandes_client(List<Commande> commandes, Client c)
         {
             foreach(Commande com in commandes)
@@ -312,6 +317,10 @@ namespace HUET_JOUBERT
                 }
             }
         }
+        /// <summary>
+        /// Affiche le nombre de livraisons effectuées par chaque chauffeur
+        /// </summary>
+        /// <param name="entreprise">L'ensemble des salariés de l'entreprise dont ses chauffeurs</param>
         static void Nombre_livraisons_chauffeur(List<Salarie> entreprise)
         {
             foreach (Salarie s in entreprise)
@@ -322,6 +331,11 @@ namespace HUET_JOUBERT
                 }             
             }
         }
+        /// <summary>
+        /// Donne la moyenne des portes-monnaies virtuels de l'ensemble des clients
+        /// </summary>
+        /// <param name="clients">Ensemble de clients</param>
+        /// <returns>Valeur moyenne</returns>
         public static double Moyenne_Comptes_Clients(List<Client> clients)
         {
             double moyenne = 0.0;
@@ -332,7 +346,17 @@ namespace HUET_JOUBERT
             moyenne = moyenne / clients.Count;
             return moyenne;
         }
+        /// <summary>
+        /// Delegation pour trouver des moyennes des prix de certaines commandes
+        /// </summary>
+        /// <param name="commandes">Commandes à prendre en considération</param>
+        /// <returns>Valur moyenne</returns>
         public delegate double Moyenne_Commandes(List<Commande> commandes);
+        /// <summary>
+        /// Donne la moyenne des prix de l'ensemble des commandes validées
+        /// </summary>
+        /// <param name="commandes">Ensemble des commandes validées</param>
+        /// <returns>Valeur moyenne</returns>
         public static double Moyenne_Prix_Commandes(List<Commande> commandes)
         {
             double moyenne = 0.0;
@@ -345,6 +369,11 @@ namespace HUET_JOUBERT
         }
         #endregion
         #region Autre
+        /// <summary>
+        /// Donne la moyenne des prix des commandes de prix supérieur à 100€
+        /// </summary>
+        /// <param name="commandes">Ensemble des commandes validées</param>
+        /// <returns>Valeur moyenne</returns>
         public static double Moyenne_Prix_Grosses_Commandes(List<Commande> commandes)
         {
             double moyenne = 0.0;
@@ -360,6 +389,10 @@ namespace HUET_JOUBERT
             moyenne = moyenne / nbr;
             return moyenne;
         }
+        /// <summary>
+        /// Affiche l'ensemble des commandes de cette année
+        /// </summary>
+        /// <param name="commandes">Ensemble des commandes validées depuis la création de l'entreprise</param>
         static void Commandes_actuelles(List<Commande> commandes)
         {
             foreach (Commande c in commandes)
@@ -370,6 +403,11 @@ namespace HUET_JOUBERT
                 }
             }
         }
+        /// <summary>
+        /// Affiche l'ensemble des commandes partant d'une même ville
+        /// </summary>
+        /// <param name="commandes">Ensemble des commandes validées</param>
+        /// <param name="ville">Ville de départ</param>
         static void Commandes_trajet_similaire(List<Commande> commandes, string ville)
         {
             foreach (Commande c in commandes)
@@ -380,6 +418,11 @@ namespace HUET_JOUBERT
                 }
             }
         }
+        /// <summary>
+        /// Donne la commande de prix le plus élévé
+        /// </summary>
+        /// <param name="commandes">Ensemble des commandes validées</param>
+        /// <returns>Commande dont le prix est le plus élevé parmi toutes les commandes</returns>
         static Commande Commande_rentable(List<Commande> commandes)
         {
             Commande retour = null;
@@ -398,11 +441,23 @@ namespace HUET_JOUBERT
         }
         #endregion
         #region Client
+        /// <summary>
+        /// Ajoute un client dans la liste de tous les clients
+        /// </summary>
+        /// <param name="clients">Liste de tous les clients déjà recensés</param>
+        /// <param name="ajout">Client à ajouter</param>
+        /// <returns>Nouvelle liste avec le client rajouté</returns>
         public static List<Client> AjouterClient(List<Client> clients, Client ajout)
         {
             clients.Add(ajout);
             return clients;
         }
+        /// <summary>
+        /// Retire un client qui n'existe plus
+        /// </summary>
+        /// <param name="clients">Liste de tous les clients de l'entreprise</param>
+        /// <param name="supprime">Client à retirer</param>
+        /// <returns>Nouvelle liste sans le client en question</returns>
         public static List<Client> SupprimerClient(List<Client> clients, string supprime)
         {
             foreach(Client c in clients)
@@ -415,6 +470,10 @@ namespace HUET_JOUBERT
             }
             return clients;
         }
+        /// <summary>
+        /// Modifie un attribut d'un client
+        /// </summary>
+        /// <param name="c">Client à modifier</param>
         public static void ModifierClient(Client c)
         {
             Console.WriteLine("Quel attribut voulez-vous modifier ?");
@@ -443,6 +502,11 @@ namespace HUET_JOUBERT
                     break;
             }
         }
+        /// <summary>
+        /// Trier les clients par ordre alphabétique
+        /// </summary>
+        /// <param name="clients">Tous les clients de l'entreprise</param>
+        /// <returns>Liste nouvellement ordonnée</returns>
         static List<Client> TrierParOrdreAlphabetique(List<Client> clients)
         {
             int n = clients.Count;
@@ -459,13 +523,20 @@ namespace HUET_JOUBERT
             }
             return clients;
         }
+        /// <summary>
+        /// Trie les par leur ville
+        /// </summary>
+        /// <param name="clients">Tous les clients de l'entreprise</param>
+        /// <returns>Liste nouvellement ordonnée</returns>
         // Fonction pour trier une liste de clients par ville
         public static List<Client> TrierParVille(List<Client> clients)
         {
             return clients.OrderBy(client => client.Adresse).ToList();
         }
-
-        /// Méthode pour afficher une liste de clients en utilisant List.ForEach
+        /// <summary>
+        /// Affiche l'ensemble des clients
+        /// </summary>
+        /// <param name="clients">Tous les clients de l'entreprise</param>
         public static void AfficherListeClients(List<Client> clients)
         {
             clients.ForEach(client =>
@@ -473,12 +544,22 @@ namespace HUET_JOUBERT
                 Console.WriteLine($"Nom: {client.Nom}, Prénom: {client.Prenom}, Cagnotte: {client.Cagnotte}, Montant global: {client.MontantGlobal}, Adresse: {client.Adresse}");
             });
         }
+        /// <summary>
+        /// Trie les clients par fidélité (selon leur argent dépensé dans cette entreprise)
+        /// </summary>
+        /// <param name="clients">Tous les clients de l'entreprise</param>
+        /// <returns>Liste nouvellement ordonnée</returns>
         public static List<Client> TrierParMontantAchatsCumules(List<Client> clients)
         {
             return clients.OrderBy(client => client.MontantGlobal).ToList();
         }
         #endregion
-        #region sauvegarde
+        #region Sauvegarde
+        /// <summary>
+        /// Sauvegarde l'ensemble des commandes validées dans un fichier
+        /// </summary>
+        /// <param name="commandes">Toutes les commandes validées</param>
+        /// <param name="nomfichier">Nom du fichier de recensement</param>
         static void Sauvegarde(List<Commande> commandes, string nomfichier)
         {
             try
@@ -498,8 +579,11 @@ namespace HUET_JOUBERT
                 Console.WriteLine($"Error saving commandes: {e.Message}");
             }
         }
-
-
+        /// <summary>
+        /// Récupère les commandes présentes dans un fichier
+        /// </summary>
+        /// <param name="nomfichier">Fichier contenant les commandes à extraire</param>
+        /// <returns>Ensemble des commandes récupérées</returns>
         static List<Commande> ChargerCommandes(string nomfichier)
         {
             List<Commande> commandes = new List<Commande>();
@@ -512,7 +596,6 @@ namespace HUET_JOUBERT
                     while ((line = sr.ReadLine()) != null)
                     {
                         string[] values = line.Split(',');
-
                         // Créer un objet Commande à partir des données lues
                         Commande commande = new Commande(
                             null, // Client non sauvegardé
@@ -532,7 +615,6 @@ namespace HUET_JOUBERT
             {
                 Console.WriteLine($"Error loading commandes: {e.Message}");
             }
-
             return commandes;
         }
         #endregion
