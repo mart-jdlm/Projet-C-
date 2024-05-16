@@ -9,6 +9,8 @@ namespace HUET_JOUBERT
     {
         static void Main(string[] args)
         {
+            foreach (string v in GestionDistance.PlusCourtChemin("Paris", "Lyn")) Console.WriteLine(v);
+            Console.WriteLine(GestionDistance.CalculerDistanceTotale("Paris", "Lon"));
             #region BDD
             int rep = 15;
             List<Commande> commandes = new List<Commande> { };
