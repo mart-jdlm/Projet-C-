@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -84,7 +84,7 @@ namespace HUET_JOUBERT
         {
             if (noeud == null) return;
 
-            Console.WriteLine(prefixe + "└── " + noeud.Employe.Nom);
+            Console.WriteLine(prefixe + "└── " + noeud.Employe.Nom + " : " + noeud.Employe.Poste);
 
             foreach (Noeud sousNoeud in noeud.Subordonnes)
             {
