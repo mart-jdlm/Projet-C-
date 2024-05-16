@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System;
 using System.Linq;
@@ -33,6 +33,35 @@ namespace HUET_JOUBERT
             Salarie comptable = new Salarie("Fournier", "Comptable");
             Salarie comptable2 = new Salarie("Gautier", "Comptable");
             List<Salarie> entreprise = new List<Salarie> { directeur_general, directrice_commerciale, directeur_operations, directrice_RH, directeur_financier, commercial, commerciale, chef_equipe, chef_equipe2, chauffeur, chauffeur2, chaufeur3, chauffeur4, chauffeur5, formation, contrats, direction_comptable, controleur_gestion, comptable, comptable2 };
+            Organigramme organigramme = new Organigramme(directeur_general);
+
+            // Embauche des employés
+            organigramme.Embaucher(directrice_commerciale, organigramme.Racine);
+            organigramme.Embaucher(directeur_operations, organigramme.Racine);
+            organigramme.Embaucher(directrice_RH, organigramme.Racine);
+            organigramme.Embaucher(directeur_financier, organigramme.Racine);
+
+            organigramme.Embaucher(commercial, organigramme.Racine.Subordonnes[0]);
+            organigramme.Embaucher(commerciale, organigramme.Racine.Subordonnes[0]);
+            organigramme.Embaucher(chef_equipe, organigramme.Racine.Subordonnes[1]);
+            organigramme.Embaucher(chef_equipe2, organigramme.Racine.Subordonnes[1]);
+
+            organigramme.Embaucher(chauffeur, organigramme.Racine.Subordonnes[1].Subordonnes[0]);
+            organigramme.Embaucher(chauffeur2, organigramme.Racine.Subordonnes[1].Subordonnes[0]);
+            organigramme.Embaucher(chaufeur3, organigramme.Racine.Subordonnes[1].Subordonnes[0]);
+            organigramme.Embaucher(chauffeur4, organigramme.Racine.Subordonnes[1].Subordonnes[1]);
+            organigramme.Embaucher(chauffeur5, organigramme.Racine.Subordonnes[1].Subordonnes[1]);
+
+            organigramme.Embaucher(formation, organigramme.Racine.Subordonnes[2]);
+            organigramme.Embaucher(contrats, organigramme.Racine.Subordonnes[2]);
+            organigramme.Embaucher(direction_comptable, organigramme.Racine.Subordonnes[3]);
+            organigramme.Embaucher(controleur_gestion, organigramme.Racine.Subordonnes[3]);
+            organigramme.Embaucher(comptable, organigramme.Racine.Subordonnes[3].Subordonnes[0]);
+            organigramme.Embaucher(comptable2, organigramme.Racine.Subordonnes[3].Subordonnes[0]);
+
+            // Affichage de l'organigramme
+            organigramme.AfficherOrganigramme(organigramme.Racine);
+            Console.Read();
             Client client1 = new Client("Huet", "Valentin", "Maurepas",100);
             Client client2 = new Client("Joubert", "Martin", "Asnières",200);
             Client client3 = new Client("111111111", "Dupont", "Jean", new DateTime(1980, 5, 15), "Paris", "example1@example.com", "111111111", 100);
