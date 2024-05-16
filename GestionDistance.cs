@@ -9,34 +9,21 @@ namespace HUET_JOUBERT
 {
     internal class GestionDistance
     {
-        public static List<Distance> ImporterDistances(string cheminFichier)
+        public static string[] ImporterDistances(string cheminFichier)
         {
-            List<Distance> distances = new List<Distance>();
-
-            try
+            // Vérification si le fichier existe
+            if (File.Exists(cheminFichier))
             {
-                using (StreamReader sr = new StreamReader(cheminFichier))
-                {
-                    string line;
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        string[] parts = line.Split('\t');
+                // Lecture du fichier et stockage des lignes dans un tableau de chaînes
+                string[] lignes = File.ReadAllLines(cheminFichier);
 
-                        string villeDepart = parts[0];
-                        string villeArrivee = parts[1];
-                        int distanceEnKm = int.Parse(parts[2]);
-                        TimeSpan duree = TimeSpan.Parse(parts[3]);
-
-                        distances.Add(new Distance(villeDepart, villeArrivee, distanceEnKm, duree));
-                    }
-                }
+                return lignes;
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine("Erreur lors de l'importation des distances : " + ex.Message);
+                Console.WriteLine("Le fichier n'existe pas.");
+                return null;
             }
-
-            return distances;
         }
 
         public static void EnregistrerDistances(List<Distance> distances, string cheminFichier)
@@ -67,6 +54,185 @@ namespace HUET_JOUBERT
                 Console.WriteLine($" - Durée : {distance.Duree}");
                 Console.WriteLine();
             }
+        }
+
+        public static ListeSCE CreerListeVille()
+        {
+            string[] ToutesLesLignes = ImporterDistances("Distances.txt");
+            ListeSCE listeVilles = new ListeSCE();
+
+            foreach (var ligne in ToutesLesLignes)
+            {
+                var villes = ligne.Split('\t');
+                // Ajouter uniquement la première ville de la ligne à la liste
+                listeVilles.AjouterVille(villes[0]);
+                // Ajouter uniquement la deuxième ville de la ligne à la liste
+                listeVilles.AjouterVille(villes[1]);
+            }
+
+            return listeVilles;
+        }
+
+        public static int[,] CreerMatriceDeDistance()
+        {
+            string[] ToutesLesLignes = ImporterDistances("Distances.txt");
+            //Créer la liste de ville en appelant la methode CreerListeVille puis initialiser la matrice, 99999 partout sauf sur les diagonales il faut mettre 0
+            var listeVilles = CreerListeVille();
+            var count = listeVilles.Count;
+            var matrice = new int[count, count];
+
+            // Initialiser la matrice avec 99999 partout sauf sur les diagonales où il faut mettre 0
+            for (int i = 0; i < count; i++)
+            {
+                for (int j = 0; j < count; j++)
+                {
+                    if (i == j)
+                    {
+                        matrice[i, j] = 0;
+                    }
+                    else
+                    {
+                        matrice[i, j] = 99999;
+                    }
+                }
+            }
+
+            foreach (var ligne in ToutesLesLignes)
+            {
+                var elements = ligne.Split('\t');
+                var indexVille1 = listeVilles.GetIndice(elements[0]);
+                var indexVille2 = listeVilles.GetIndice(elements[1]);
+                var distance = int.Parse(elements[2]);
+
+                matrice[indexVille1, indexVille2] = distance;
+                matrice[indexVille2, indexVille1] = distance; // Pour graphe non orienté
+            }
+
+            return matrice;
+
+        }
+
+        public static void AfficherMatriceAvecVilles(int[,] matrice, ListeSCE listeVilles)
+        {
+            int lignes = matrice.GetLength(0);
+            int colonnes = matrice.GetLength(1);
+
+            // Affichage des noms des villes en entête
+            Console.Write("   ");
+            for (int j = 0; j < colonnes; j++)
+            {
+                Console.Write($"{listeVilles.GetVille(j),-10}");
+            }
+            Console.WriteLine();
+
+            for (int i = 0; i < lignes; i++)
+            {
+                Console.Write($"{listeVilles.GetVille(i),-10}");
+                for (int j = 0; j < colonnes; j++)
+                {
+                    Console.Write($"{matrice[i, j],-10}");
+                }
+                Console.WriteLine();
+            }
+        }
+        public static List<string> PlusCourtChemin(string villeDepart, string villeArrivee)
+        {
+            int[,] matrice = CreerMatriceDeDistance();
+            ListeSCE listeVilles = CreerListeVille();
+            int nbVilles = listeVilles.Count;
+            int[] distances = new int[nbVilles];
+            bool[] visite = new bool[nbVilles];
+            int[] precedent = new int[nbVilles];
+
+            int indiceDepart = listeVilles.GetIndice(villeDepart);
+            int indiceArrivee = listeVilles.GetIndice(villeArrivee);
+
+            if (indiceDepart == -1 || indiceArrivee == -1)
+            {
+                Console.WriteLine("La ville de départ ou d'arrivée n'existe pas dans la liste des villes.");
+                return new List<string>();
+            }
+
+            // Initialisation
+            for (int i = 0; i < nbVilles; i++)
+            {
+                distances[i] = int.MaxValue;
+                visite[i] = false;
+                precedent[i] = -1;
+            }
+
+            distances[indiceDepart] = 0;
+
+            for (int i = 0; i < nbVilles - 1; i++)
+            {
+                int noeudCourant = TrouverNoeudNonVisiteAvecDistanceMinimum(distances, visite);
+                visite[noeudCourant] = true;
+
+                for (int j = 0; j < nbVilles; j++)
+                {
+                    if (!visite[j] && matrice[noeudCourant, j] != 0 && distances[noeudCourant] + matrice[noeudCourant, j] < distances[j])
+                    {
+                        distances[j] = distances[noeudCourant] + matrice[noeudCourant, j];
+                        precedent[j] = noeudCourant;
+                    }
+                }
+            }
+
+            List<string> plusCourtChemin = new List<string>();
+
+            if (distances[indiceArrivee] != int.MaxValue)
+            {
+                int noeudCourant = indiceArrivee;
+                while (noeudCourant != -1)
+                {
+                    plusCourtChemin.Add(listeVilles.GetVille(noeudCourant));
+                    noeudCourant = precedent[noeudCourant];
+                }
+
+                // Inverser l'ordre du chemin
+                plusCourtChemin.Reverse();
+            }
+            else
+            {
+                throw new InvalidOperationException("Il n'existe pas de chemin entre la ville de départ et la ville d'arrivée.");
+            }
+
+            return plusCourtChemin;
+        }
+
+        private static int TrouverNoeudNonVisiteAvecDistanceMinimum(int[] distances, bool[] visite)
+        {
+            int minDistance = int.MaxValue;
+            int noeudAvecMinDistance = -1;
+
+            for (int i = 0; i < distances.Length; i++)
+            {
+                if (!visite[i] && distances[i] < minDistance)
+                {
+                    minDistance = distances[i];
+                    noeudAvecMinDistance = i;
+                }
+            }
+
+            return noeudAvecMinDistance;
+        }
+
+        public static int CalculerDistanceTotale(string villeDepart, string villeArrivee)
+        {
+            int[,] matrice = CreerMatriceDeDistance();
+            ListeSCE listeVilles = CreerListeVille();
+            List<string> chemin = PlusCourtChemin(villeDepart, villeArrivee);
+            int distanceTotale = 0;
+
+            for (int i = 0; i < chemin.Count - 1; i++)
+            {
+                int indiceVilleDepart = listeVilles.GetIndice(chemin[i]);
+                int indiceVilleArrivee = listeVilles.GetIndice(chemin[i + 1]);
+
+                distanceTotale += matrice[indiceVilleDepart, indiceVilleArrivee];
+            }
+
+            return distanceTotale;
         }
     }
 }
